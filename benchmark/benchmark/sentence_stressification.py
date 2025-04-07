@@ -12,12 +12,13 @@ class SentenceMismatchError(Exception):
     """Custom exception for sentence mismatch errors."""
     pass
 
-heteronyms_df = pd.read_csv(os.path.join("..", "benchmark", "data", "heteronyms", "heteronyms.csv"))
+heteronyms_df = pd.read_csv(os.path.join("..", "data", "heteronyms_list.csv"))
+HETERONYMS = set(heteronyms_df["Heteronym"])
+
 
 def is_word_heteronym(word: str):
-    word = word.replace('', '').lower()
-    word_set = set(heteronyms_df["Word"])
-    return word in word_set
+    word = word.replace('+', '').lower()
+    return word in HETERONYMS
 
 def evaluate_stress_word_level(correct_word: str, stressified_word: str, stress_mark: str='+'):
     """

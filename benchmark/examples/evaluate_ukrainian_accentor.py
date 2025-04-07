@@ -31,6 +31,13 @@ def custom_stressify(text):
 if __name__ == '__main__':
     sentence_accuracy, word_accuracy, heteronym_accuracy = evaluate_stressification(custom_stressify, stress_mark='+')
 
-    print("Sentence Accuracy: ", sentence_accuracy)
-    print("Word Accuracy: ", word_accuracy)
-    print("Heteronym Accuracy: ", heteronym_accuracy)
+    print('Ukrainian Accentor results:')
+    print(f"Sentence Accuracy: {sentence_accuracy:.2f}%")
+    print(f"Word Accuracy: {word_accuracy:.2f}%")
+    print(f"Heteronym Accuracy: {heteronym_accuracy:.2f}%")
+
+    # 08.04.2025
+    # Ukrainian Accentor results:
+    # Sentence Accuracy: 0.16%
+    # Word Accuracy: 0.80%
+    # Heteronym Accuracy: 0.42%
