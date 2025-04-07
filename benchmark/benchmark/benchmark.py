@@ -5,6 +5,7 @@ from tqdm import tqdm
 from .sentence_stressification import evaluate_stress_sentence_level
 from .accuracy import AccuracyMetrics
 
+
 class NoSentencesProcessedError(Exception):
     """Custom error to indicate that no sentences were processed."""
     pass
@@ -19,16 +20,15 @@ def open_dataset_for_evaluation():
     Returns:
         pd.Series: A Pandas Series containing the stressed sentences from the dataset.
     """
-    uk_wiki_stressed_path = os.path.join('..', 'data', 'plug', 'plug_from_excel.csv')
-    if not os.path.exists(uk_wiki_stressed_path):
-        raise FileNotFoundError(f"The file '{uk_wiki_stressed_path}' does not exist.")
+    uk_stressed_dataset_path = os.path.join('..', 'data', 'lexical_stress_dataset.csv')
+    if not os.path.exists(uk_stressed_dataset_path):
+        raise FileNotFoundError(f"The file '{uk_stressed_dataset_path}' does not exist.")
 
     try:
-        dataset = pd.read_csv(uk_wiki_stressed_path, sep=';')
+        dataset = pd.read_csv(uk_stressed_dataset_path)
     except Exception as e:
         raise Exception(f"An error occurred while reading the CSV file: {e}")
 
-    dataset = dataset[dataset['Done'] == True]
     dataset_series = dataset['StressedSentence']
     return dataset_series
 
