@@ -91,7 +91,7 @@ def evaluate_stress_word_level(
     return set(candidate_stresses).issubset(correct_stresses)
 
 
-def evaluate_stress_sentence_level(correct_sentence: str, stressified_sentence: str, stress_mark: str='+', raise_on_mismatch: bool=True):
+def evaluate_stress_sentence_level(correct_sentence: str, stressified_sentence: str, stress_mark: str='+', raise_on_mismatch: bool=True, incorrect_on_mismatch: bool=False) -> bool:
     """
     Evaluates the stressification of a sentence by comparing each word.
 
@@ -120,10 +120,12 @@ def evaluate_stress_sentence_level(correct_sentence: str, stressified_sentence: 
     accuracy = SentenceAccuracy()
     accuracy.total_words = len(correct_words)
 
-    if correct_sentence.replace('+', '') != stressified_sentence.replace('+', '') or len(correct_words) != len(stressified_words):
+    if correct_sentence.replace(stress_mark, '') != stressified_sentence.replace(stress_mark, '') or len(correct_words) != len(stressified_words):
         if raise_on_mismatch:
             raise SentenceMismatchError("The number of words in the sentences does not match.")
-        return accuracy
+        if not incorrect_on_mismatch:
+            return None
+        stressified_words =  re.findall(r'\S+', stressified_sentence.replace(stress_mark, ''))
 
     is_heteronym = False
     is_unambiguity = False
