@@ -55,6 +55,7 @@ def evaluate_stressification(stressify_sentence_function, stress_mark: str = '+'
     metrics = DatasetAccuracy()
 
     iterator = tqdm(dataset, desc="Evaluating stressification", disable=not show_progress)
+    skipped = 0
 
     # Process each sentence
     for correct_sentence in iterator:
@@ -64,13 +65,14 @@ def evaluate_stressification(stressify_sentence_function, stress_mark: str = '+'
         # Evaluate word and sentence accuracy
         current_metrics = evaluate_stress_sentence_level(correct_sentence, stressified_sentence, raise_on_mismatch=raise_on_sent_mismatch, incorrect_on_mismatch=incorrect_on_mismatch)
         if not incorrect_on_mismatch and current_metrics is None:
+            skipped += 1
             continue
 
         # Accumulate the accuracy
         metrics.update_with_sentence(current_metrics)
 
     # Calculate average accuracies
-    total_sentences = len(dataset)
+    total_sentences = len(dataset) - skipped
     if total_sentences == 0:
         raise NoSentencesProcessedError("Warning: All sentences were skipped.")
 
