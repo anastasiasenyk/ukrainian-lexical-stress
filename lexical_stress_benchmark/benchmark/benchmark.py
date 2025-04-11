@@ -35,7 +35,7 @@ def open_dataset_for_evaluation():
 
 
 def evaluate_stressification(stressify_sentence_function, stress_mark: str = '+',
-                             show_progress: bool = True, raise_on_sent_mismatch: bool=True):
+                             show_progress: bool = True, raise_on_sent_mismatch: bool=True, incorrect_on_mismatch: bool=False):
     """
     Evaluates the accuracy of stressification on a dataset by comparing the
     stressified sentences to the correct sentences.
@@ -62,7 +62,9 @@ def evaluate_stressification(stressify_sentence_function, stress_mark: str = '+'
         stressified_sentence = stressify_sentence_function(sentence)
 
         # Evaluate word and sentence accuracy
-        current_metrics = evaluate_stress_sentence_level(correct_sentence, stressified_sentence, raise_on_mismatch=raise_on_sent_mismatch)
+        current_metrics = evaluate_stress_sentence_level(correct_sentence, stressified_sentence, raise_on_mismatch=raise_on_sent_mismatch, incorrect_on_mismatch=incorrect_on_mismatch)
+        if not incorrect_on_mismatch and current_metrics is None:
+            continue
 
         # Accumulate the accuracy
         metrics.update_with_sentence(current_metrics)
