@@ -28,22 +28,23 @@ class SentenceAccuracy:
         if not isinstance(other, SentenceAccuracy):
             return False
         return (
-                self.total_words == other.total_words and
-                self.correctly_stressified_words == other.correctly_stressified_words and
-                self.total_heteronyms == other.total_heteronyms and
-                self.correctly_stressified_heteronyms == other.correctly_stressified_heteronyms and
-                self.total_unambiguous_words == other.total_unambiguous_words and
-                self.correctly_stressified_unambiguous == other.correctly_stressified_unambiguous
+            self.total_words == other.total_words
+            and self.correctly_stressified_words == other.correctly_stressified_words
+            and self.total_heteronyms == other.total_heteronyms
+            and self.correctly_stressified_heteronyms == other.correctly_stressified_heteronyms
+            and self.total_unambiguous_words == other.total_unambiguous_words
+            and self.correctly_stressified_unambiguous == other.correctly_stressified_unambiguous
         )
 
     def __repr__(self) -> str:
-        return (f"SentenceAccuracy(total_words={self.total_words}, "
-                f"correctly_stressified_words={self.correctly_stressified_words}, "
-                f"total_heteronyms={self.total_heteronyms}, "
-                f"correctly_stressified_heteronyms={self.correctly_stressified_heteronyms}, "
-                f"total_unambiguous_words={self.total_unambiguous_words}, "
-                f"correctly_stressified_unambiguous={self.correctly_stressified_unambiguous})")
-
+        return (
+            f"SentenceAccuracy(total_words={self.total_words}, "
+            f"correctly_stressified_words={self.correctly_stressified_words}, "
+            f"total_heteronyms={self.total_heteronyms}, "
+            f"correctly_stressified_heteronyms={self.correctly_stressified_heteronyms}, "
+            f"total_unambiguous_words={self.total_unambiguous_words}, "
+            f"correctly_stressified_unambiguous={self.correctly_stressified_unambiguous})"
+        )
 
 
 class DatasetAccuracy:
@@ -89,6 +90,12 @@ class DatasetAccuracy:
         return {
             "sentence_accuracy": self.fully_correct_sentences / total_sentences if total_sentences else 0.0,
             "word_accuracy": self.correctly_stressified_words / self.total_words if self.total_words else 0.0,
-            "heteronym_accuracy": self.correctly_stressified_heteronyms / self.total_heteronyms if self.total_heteronyms else 0.0,
-            "unambiguous_accuracy": self.correctly_stressified_unambiguous / self.total_unambiguous_words if self.total_unambiguous_words else 0.0
+            "heteronym_accuracy": (
+                self.correctly_stressified_heteronyms / self.total_heteronyms if self.total_heteronyms else 0.0
+            ),
+            "unambiguous_accuracy": (
+                self.correctly_stressified_unambiguous / self.total_unambiguous_words
+                if self.total_unambiguous_words
+                else 0.0
+            ),
         }

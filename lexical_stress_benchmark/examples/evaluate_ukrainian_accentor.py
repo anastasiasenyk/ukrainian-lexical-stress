@@ -1,17 +1,17 @@
-from lexical_stress_benchmark import evaluate_stressification, shift_stress_marks
-import ukrainian_accentor as accentor # pip install ukrainian_word_stress
+import ukrainian_accentor as accentor
+from lexical_stress_benchmark import evaluate_stressification, shift_stress_marks_right
 
 
 def custom_stressify(text):
-    result = accentor.process(text, mode='plus')
-    return shift_stress_marks(result)
+    result = accentor.process(text, mode="plus")
+    return shift_stress_marks_right(result)
 
 
-if __name__ == '__main__':
-    accuracies = evaluate_stressification(custom_stressify, stress_mark='+')
+if __name__ == "__main__":
+    accuracies = evaluate_stressification(custom_stressify, stress_mark="+")
     sentence_accuracy, word_accuracy, heteronym_accuracy, unambiguous_accuracy = accuracies.values()
 
-    print('Ukrainian Accentor results:')
+    print("Ukrainian Accentor results:")
 
     print(f"{'Sentence Accuracy:':30} {sentence_accuracy * 100:.2f}%")
     print(f"{'Word Accuracy:':30} {word_accuracy * 100:.2f}%")

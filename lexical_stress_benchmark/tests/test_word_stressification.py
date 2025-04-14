@@ -1,6 +1,6 @@
 import unittest
 
-from lexical_stress_benchmark.benchmark.sentence_stressification import evaluate_stress_word_level
+from lexical_stress_benchmark.benchmark.sentence_stress_evaluator import evaluate_stress_word_level
 
 
 class TestEvaluateStressWordLevel(unittest.TestCase):
