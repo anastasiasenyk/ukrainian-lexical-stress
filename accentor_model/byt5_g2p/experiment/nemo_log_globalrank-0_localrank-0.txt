@@ -1,0 +1,57 @@
+[NeMo I 2025-04-13 01:04:55 exp_manager:469] ExpManager schema
+[NeMo I 2025-04-13 01:04:55 exp_manager:470] {'explicit_log_dir': None, 'exp_dir': None, 'name': None, 'version': None, 'use_datetime_version': True, 'resume_if_exists': False, 'resume_past_end': False, 'resume_ignore_no_checkpoint': False, 'resume_from_checkpoint': None, 'create_tensorboard_logger': True, 'summary_writer_kwargs': None, 'create_wandb_logger': False, 'wandb_logger_kwargs': None, 'create_mlflow_logger': False, 'mlflow_logger_kwargs': {'experiment_name': None, 'tracking_uri': None, 'tags': None, 'save_dir': './mlruns', 'prefix': '', 'artifact_location': None, 'run_id': None, 'log_model': False}, 'create_dllogger_logger': False, 'dllogger_logger_kwargs': {'verbose': False, 'stdout': False, 'json_file': './dllogger.json'}, 'create_clearml_logger': False, 'clearml_logger_kwargs': {'project': None, 'task': None, 'connect_pytorch': False, 'model_name': None, 'tags': None, 'log_model': False, 'log_cfg': False, 'log_metrics': False}, 'create_neptune_logger': False, 'neptune_logger_kwargs': None, 'create_checkpoint_callback': True, 'checkpoint_callback_params': {'filepath': None, 'dirpath': None, 'filename': None, 'monitor': 'val_loss', 'verbose': True, 'save_last': True, 'save_top_k': 3, 'save_weights_only': False, 'mode': 'min', 'auto_insert_metric_name': True, 'every_n_epochs': 1, 'every_n_train_steps': None, 'train_time_interval': None, 'prefix': None, 'postfix': '.nemo', 'save_best_model': False, 'always_save_nemo': False, 'save_nemo_on_train_end': True, 'model_parallel_size': None, 'save_on_train_epoch_end': False, 'async_save': False, 'save_last_n_optim_states': -1}, 'create_early_stopping_callback': False, 'early_stopping_callback_params': {'monitor': 'val_loss', 'mode': 'min', 'min_delta': 0.001, 'patience': 10, 'verbose': True, 'strict': True, 'check_finite': True, 'stopping_threshold': None, 'divergence_threshold': None, 'check_on_train_epoch_end': None, 'log_rank_zero_only': False}, 'create_preemption_callback': True, 'files_to_copy': None, 'log_step_timing': True, 'log_delta_step_timing': False, 'step_timing_kwargs': {'reduction': 'mean', 'sync_cuda': False, 'buffer_size': 1}, 'log_local_rank_0_only': False, 'log_global_rank_0_only': False, 'disable_validation_on_resume': True, 'ema': {'enable': False, 'decay': 0.999, 'cpu_offload': False, 'validate_original_weights': False, 'every_n_steps': 1}, 'max_time_per_run': None, 'seconds_to_sleep': 5.0, 'create_straggler_detection_callback': False, 'straggler_detection_params': {'report_time_interval': 300.0, 'calc_relative_gpu_perf': True, 'calc_individual_gpu_perf': True, 'num_gpu_perf_scores_to_log': 5, 'gpu_relative_perf_threshold': 0.7, 'gpu_individual_perf_threshold': 0.7, 'stop_if_detected': False}, 'create_fault_tolerance_callback': False, 'fault_tolerance': {'workload_check_interval': 5.0, 'initial_rank_heartbeat_timeout': 3600.0, 'rank_heartbeat_timeout': 2700.0, 'calculate_timeouts': True, 'safety_factor': 5.0, 'rank_termination_signal': <Signals.SIGKILL: 9>, 'log_level': 'INFO', 'max_rank_restarts': 0, 'max_subsequent_job_failures': 0, 'additional_ft_launcher_args': '', 'simulated_fault': None}, 'log_tflops_per_sec_per_gpu': True}
+[NeMo I 2025-04-13 01:04:55 exp_manager:528] Experiments will be logged at /nemo_experiments/T5G2P/2025-04-13_01-04-55
+[NeMo I 2025-04-13 01:04:55 exp_manager:1082] TensorboardLogger has been set up
+[NeMo I 2025-04-13 01:04:55 exp_manager:665] TFLOPs per sec per GPU will be calculated, conditioned on supported models. Defaults to -1 upon failure.
+[NeMo I 2025-04-13 01:04:55 t5:71] Loading dataset from: train.json
+[NeMo I 2025-04-13 01:05:07 t5:100] Filtered 11133 too long entries from train.json.
+[NeMo I 2025-04-13 01:05:07 t5:71] Loading dataset from: eval.json
+[NeMo I 2025-04-13 01:05:07 t5:100] Filtered 117 too long entries from eval.json.
+[NeMo I 2025-04-13 01:05:07 t5:71] Loading dataset from: eval.json
+[NeMo I 2025-04-13 01:05:07 t5:100] Filtered 117 too long entries from eval.json.
+[NeMo I 2025-04-13 01:05:09 modelPT:793] Optimizer config = AdamW (
+    Parameter Group 0
+        amsgrad: False
+        betas: (0.9, 0.999)
+        capturable: False
+        differentiable: False
+        eps: 1e-08
+        foreach: None
+        fused: None
+        lr: 0.0002
+        maximize: False
+        weight_decay: 0.01
+    )
+[NeMo I 2025-04-13 01:05:09 lr_scheduler:948] Scheduler "<nemo.core.optim.lr_scheduler.WarmupAnnealing object at 0x7f0325888100>" 
+    will be used during training (effective maximum steps = 71080) - 
+    Parameters : 
+    (warmup_steps: null
+    warmup_ratio: 0.1
+    last_epoch: -1
+    max_steps: 71080
+    )
+[NeMo I 2025-04-13 01:05:14 t5:229] PER: 124.1% EVAL_, 2examples
+[NeMo W 2025-04-13 01:05:14 nemo_logging:361] /opt/conda/lib/python3.10/site-packages/lightning/pytorch/trainer/connectors/logger_connector/result.py:431: It is recommended to use `self.log('val_per', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+    
+[NeMo W 2025-04-13 01:05:14 nemo_logging:361] /opt/conda/lib/python3.10/site-packages/lightning/pytorch/trainer/connectors/logger_connector/result.py:431: It is recommended to use `self.log('val_per_EVAL_', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+    
+[NeMo I 2025-04-13 02:15:08 t5:229] PER: 1.16% EVAL_, 81examples
+[NeMo I 2025-04-13 03:25:00 t5:229] PER: 0.78% EVAL_, 81examples
+[NeMo I 2025-04-13 04:35:26 t5:229] PER: 1.0% EVAL_, 81examples
+[NeMo I 2025-04-13 05:46:12 t5:229] PER: 0.64% EVAL_, 81examples
+[NeMo I 2025-04-13 06:56:18 t5:229] PER: 0.66% EVAL_, 81examples
+[NeMo I 2025-04-13 08:06:34 t5:229] PER: 0.74% EVAL_, 81examples
+[NeMo I 2025-04-13 09:17:04 t5:229] PER: 0.63% EVAL_, 81examples
+[NeMo I 2025-04-13 10:27:37 t5:229] PER: 0.59% EVAL_, 81examples
+[NeMo I 2025-04-13 11:37:59 t5:229] PER: 0.6% EVAL_, 81examples
+[NeMo I 2025-04-13 12:48:36 t5:229] PER: 0.58% EVAL_, 81examples
+[NeMo I 2025-04-13 12:48:52 g2p_train_and_evaluate:81] During evaluation/testing, it is currently advisable to construct a new Trainer with single GPU and 				no DDP to obtain accurate results
+[NeMo I 2025-04-13 12:48:52 t5:71] Loading dataset from: eval.json
+[NeMo I 2025-04-13 12:48:52 t5:100] Filtered 117 too long entries from eval.json.
+[NeMo I 2025-04-13 12:52:08 t5:229] PER: 0.57% EVAL_, 72examples
+[NeMo W 2025-04-13 12:52:08 nemo_logging:361] /opt/conda/lib/python3.10/site-packages/lightning/pytorch/trainer/connectors/logger_connector/result.py:431: It is recommended to use `self.log('test_loss', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+    
+[NeMo W 2025-04-13 12:52:08 nemo_logging:361] /opt/conda/lib/python3.10/site-packages/lightning/pytorch/trainer/connectors/logger_connector/result.py:431: It is recommended to use `self.log('test_per', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+    
+[NeMo W 2025-04-13 12:52:08 nemo_logging:361] /opt/conda/lib/python3.10/site-packages/lightning/pytorch/trainer/connectors/logger_connector/result.py:431: It is recommended to use `self.log('test_per_EVAL_', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+    

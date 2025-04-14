@@ -6,7 +6,7 @@ validation_manifest: ???
 test_manifest: null
 do_training: True
 do_testing: False
-pretrained_model: accentor_nemo/2025-04-07_13-11-55/checkpoints/T5G2P.nemo # path to .nemo file or model name from list_available_models()
+pretrained_model: null # path to .nemo file or model name from list_available_models()
 
 model:
   model_name: "google/byt5-small" # One of: google/byt5-small/base/large/xl or t5-small/base/large/3b/11b
@@ -23,7 +23,7 @@ model:
     dataloader_params:
       drop_last: false
       shuffle: true
-      batch_size: 20
+      batch_size: 18
       num_workers: 4
 
   validation_ds:
@@ -35,7 +35,7 @@ model:
     dataloader_params:
       drop_last: false
       shuffle: false
-      batch_size: 20
+      batch_size: 16
       num_workers: 4
 
   test_ds:
@@ -47,7 +47,7 @@ model:
     dataloader_params:
       drop_last: false
       shuffle: false
-      batch_size: 20
+      batch_size: 18
       num_workers: 4
 
   optim:
@@ -68,8 +68,8 @@ model:
       last_epoch: -1
 
 trainer:
-  devices: 1 # number of gpus
-  max_epochs: 5
+  devices: 1
+  max_epochs: 10
   num_nodes: 1
   accelerator: gpu
   strategy: ddp
