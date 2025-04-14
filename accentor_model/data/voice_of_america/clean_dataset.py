@@ -115,7 +115,7 @@ def detect_wrong_stresses(sentence: str) -> bool:
 
 
 # Load dataset
-df = pd.read_csv('./raw/voa_transcribed_236k_rows_stressed.csv')
+df = pd.read_csv('../raw/voa_transcribed_236k_rows_stressed.csv')
 df = df[~df['wav2vec2_transcription'].isna()]
 
 df.loc[:,'cleaned_transcription'] = df['wav2vec2_transcription'].progress_apply(preprocess_text)
@@ -166,10 +166,9 @@ column_mappings = {
 
 final_df = filtered_df.rename(columns=column_mappings)[list(column_mappings.values())]
 final_df = final_df.reset_index(drop=True)
-final_df.to_csv('./cleaned/voa_stressed.csv')
+final_df.to_csv('./voa_stressed.csv')
 
-
-filtered_df = pd.read_csv("./cleaned/voa_stressed.csv")
+filtered_df = pd.read_csv("./voa_stressed.csv")
 
 mask = (filtered_df['is_incorrect'] == True) & (filtered_df['is_incorrect_2'] == False)
 filtered_df.loc[mask, 'wav2vec2_transcription'] = filtered_df.loc[mask, 'text'].values

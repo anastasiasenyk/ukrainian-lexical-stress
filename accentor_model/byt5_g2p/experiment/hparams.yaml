@@ -1,0 +1,51 @@
+cfg:
+  model_name: google/byt5-small
+  max_source_len: 256
+  max_target_len: 512
+  do_lower: false
+  train_ds:
+    manifest_filepath: train.json
+    dataset:
+      _target_: nemo.collections.tts.g2p.data.t5.T5G2PDataset
+      phoneme_field: text
+      grapheme_field: text_graphemes
+    dataloader_params:
+      drop_last: false
+      shuffle: true
+      batch_size: 18
+      num_workers: 4
+  validation_ds:
+    manifest_filepath: eval.json
+    dataset:
+      _target_: nemo.collections.tts.g2p.data.t5.T5G2PDataset
+      phoneme_field: text
+      grapheme_field: text_graphemes
+    dataloader_params:
+      drop_last: false
+      shuffle: false
+      batch_size: 16
+      num_workers: 2
+  test_ds:
+    manifest_filepath: eval.json
+    dataset:
+      _target_: nemo.collections.tts.g2p.data.t5.T5G2PDataset
+      phoneme_field: text
+      grapheme_field: text_graphemes
+    dataloader_params:
+      drop_last: false
+      shuffle: false
+      batch_size: 18
+      num_workers: 2
+  optim:
+    name: adamw
+    lr: 0.0002
+    weight_decay: 0.01
+    sched:
+      name: WarmupAnnealing
+      monitor: val_token_precision
+      reduce_on_plateau: false
+      warmup_steps: null
+      warmup_ratio: 0.1
+      last_epoch: -1
+  target: nemo.collections.tts.g2p.models.t5.T5G2PModel
+  nemo_version: 2.2.1

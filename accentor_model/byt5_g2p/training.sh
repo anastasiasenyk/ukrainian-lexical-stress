@@ -1,4 +1,4 @@
-CUDA_VISIBLE_DEVISES=1,2 python g2p_train_and_evaluate.py \
+CUDA_VISIBLE_DEVISES=0 python g2p_train_and_evaluate.py \
     --config-path=$PWD \
     --config-name=g2p_t5 \
     model.train_ds.manifest_filepath=train.json \
