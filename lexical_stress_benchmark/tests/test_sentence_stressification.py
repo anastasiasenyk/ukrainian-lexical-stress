@@ -2,7 +2,7 @@ import unittest
 
 from lexical_stress_benchmark import evaluate_stress_sentence_level
 from lexical_stress_benchmark.benchmark import SentenceAccuracy
-from lexical_stress_benchmark.benchmark.sentence_stressification import SentenceMismatchError, WordDetectionError
+from lexical_stress_benchmark.benchmark.sentence_stress_evaluator import SentenceMismatchError, WordDetectionError
 
 
 class TestEvaluateStressWordLevel(unittest.TestCase):
