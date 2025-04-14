@@ -4,6 +4,7 @@ from typing import List
 
 import marisa_trie
 import pandas as pd
+
 from lexical_stress_benchmark.benchmark.accuracy import SentenceAccuracy
 
 
@@ -28,7 +29,7 @@ def is_word_heteronym(word: str):
     return word in HETERONYMS
 
 
-def is_word_without_ambiguity(word: str):
+def is_word_unambiguous(word: str):
     for word in [word.lower(), word.upper()]:
         if word in VOCABULARY:
             if len(VOCABULARY[word][0]) <= 1:
@@ -43,7 +44,7 @@ def evaluate_stress_word_level(correct: str, candidate: str, stress_symbol: str 
     Args:
         correct (str): The reference word with correct stress positions marked.
         candidate (str): The stressified word to validate.
-        stress_symbol (str): The symbol used to mark stress (default is '+').
+        stress_symbol (str, optional): The symbol used to mark stress (default is '+').
 
     Returns:
         bool: True if `candidate` matches the stress pattern of `correct`, False otherwise.
@@ -95,7 +96,7 @@ def evaluate_stress_word_level(correct: str, candidate: str, stress_symbol: str 
 
 def evaluate_stress_sentence_level(
     correct_sentence: str,
-    stressified_sentence: str,
+    candidate_sentence: str,
     stress_mark: str = "+",
     raise_on_mismatch: bool = True,
     ignore_mismatch: bool = False,
@@ -103,44 +104,38 @@ def evaluate_stress_sentence_level(
     """
     Evaluates the stressification of a sentence by comparing each word.
 
-    This function calculates two metrics:
-    - Word-level accuracy: The percentage of correctly stressified words.
-    - Sentence-level accuracy: Whether the entire sentence has been stressified correctly (same as all words are correct).
-
-    Parameters:
-    correct_sentence (str): The correctly stressified sentence where accents are marked with 'stress_mark' (default is '+').
-    stressified_sentence (str): The stressified sentence to be evaluated.
-    stress_mark (str, optional): The symbol used to mark the stress (default is '+').
+    Args:
+        correct_sentence (str): The correctly stressified sentence where accents are marked with 'stress_mark'.
+        candidate_sentence (str): The candidate sentence to be evaluated for stressification.
+        stress_mark (str, optional): The symbol used to mark the stress (default is '+').
+        raise_on_mismatch (bool, optional): If True, raises an error if the sentences have mismatched structure.
+        ignore_mismatch (bool, optional): If True, returns None on mismatch instead of raising an error or proceeding with evaluation.
 
     Returns:
-    SentenceAccuracy: An instance of the `SentenceAccuracy` class containing the following attributes:
-        - word_count (int): The total number of words in the sentence.
-        - correct_word_count (int): The number of correctly stressified words.
-        - heteronym_count (int): The number of heteronym words in the sentence.
-        - correct_heteronym_count (int): The number of correctly stressified heteronym words.
+        SentenceAccuracy: An instance of the `SentenceAccuracy` class
     """
     correct_sentence = correct_sentence.strip()
-    stressified_sentence = stressified_sentence.strip()
+    candidate_sentence = candidate_sentence.strip()
 
     correct_words = re.findall(r"\S+", correct_sentence)
-    stressified_words = re.findall(r"\S+", stressified_sentence)
+    candidate_words = re.findall(r"\S+", candidate_sentence)
 
     accuracy = SentenceAccuracy()
     accuracy.total_words = len(correct_words)
 
-    if correct_sentence.replace(stress_mark, "") != stressified_sentence.replace(stress_mark, "") or len(
+    if correct_sentence.replace(stress_mark, "") != candidate_sentence.replace(stress_mark, "") or len(
         correct_words
-    ) != len(stressified_words):
+    ) != len(candidate_words):
         if raise_on_mismatch:
             raise SentenceMismatchError("The number of words in the sentences does not match.")
         if ignore_mismatch:
             return None
-        stressified_words = re.findall(r"\S+", stressified_sentence.replace(stress_mark, ""))
+        candidate_words = re.findall(r"\S+", candidate_sentence.replace(stress_mark, ""))
 
     is_heteronym = False
-    is_unambiguity = False
+    is_unambiguous = False
 
-    for correct_word, stressified_word in zip(correct_words, stressified_words):
+    for correct_word, candidate_word in zip(correct_words, candidate_words):
 
         plus_pattern = rf"[{stress_mark}]"
         ukrainian_vowels_pattern = r"[АаЕеЄєИиІіЇїОоУуЮюЯя]"
@@ -153,7 +148,7 @@ def evaluate_stress_sentence_level(
             accuracy.total_words -= 1
             continue
 
-        if len(re.findall(ukrainian_vowels_pattern, correct_word)) <= 1:  # skip words with one vowel
+        if len(re.findall(ukrainian_vowels_pattern, correct_word)) <= 1:  # skip words with <= 1 vowel
             accuracy.total_words -= 1
             continue
 
@@ -161,21 +156,21 @@ def evaluate_stress_sentence_level(
             accuracy.total_heteronyms += 1
             is_heteronym = True
 
-        if is_word_without_ambiguity(correct_word.replace(stress_mark, "")):
+        if is_word_unambiguous(correct_word.replace(stress_mark, "")):
             accuracy.total_unambiguous_words += 1
-            is_unambiguity = True
+            is_unambiguous = True
 
-        if evaluate_stress_word_level(correct_word, stressified_word, stress_mark):
+        if evaluate_stress_word_level(correct_word, candidate_word, stress_mark):
             accuracy.correctly_stressified_words += 1
 
             if is_heteronym:
                 accuracy.correctly_stressified_heteronyms += 1
 
-            if is_unambiguity:
+            if is_unambiguous:
                 accuracy.correctly_stressified_unambiguous += 1
 
         is_heteronym = False
-        is_unambiguity = False
+        is_unambiguous = False
 
     if accuracy.total_words == 0:
         raise WordDetectionError("No words were detected in the sentence.")

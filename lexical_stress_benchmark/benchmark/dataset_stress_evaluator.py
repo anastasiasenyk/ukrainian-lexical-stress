@@ -1,9 +1,10 @@
 import os
 
 import pandas as pd
+from tqdm import tqdm
+
 from lexical_stress_benchmark.benchmark.accuracy import DatasetAccuracy
 from lexical_stress_benchmark.benchmark.sentence_stress_evaluator import evaluate_stress_sentence_level
-from tqdm import tqdm
 
 
 class NoSentencesProcessedError(Exception):
@@ -37,28 +38,26 @@ def open_dataset_for_evaluation():
 
 def evaluate_stressification(
     stressify_sentence_function,
-    stress_mark: str = "+",
     show_progress: bool = True,
-    raise_on_sent_mismatch: bool = True,
+    raise_on_mismatch: bool = True,
     ignore_mismatch: bool = False,
 ):
     """
-    Evaluates the accuracy of stressification on a dataset by comparing the
-    stressified sentences to the correct sentences.
+    Evaluates the accuracy of word stress prediction across a dataset by comparing
+    the predicted sentences to the correct sentences.
 
     Args:
-    - dataset (pd.Series): A pandas series of correct sentences with stress marks.
-    - stressify_sentence_function (function): A function that stressifies a sentence.
-    - stress_mark (str): The symbol used for stress marks in the correct sentences (default is '+').
-    - show_progress (bool): Whether to display a progress bar (default is True).
+        stressify_sentence_function (function): A function that generates a sentence with '+' as the stress marks.
+        show_progress (bool, optional): Whether to display a progress bar while evaluating (default is True).
+        raise_on_mismatch (bool, optional): If True, raises an error when sentence lengths or structure mismatch.
+        ignore_mismatch (bool, optional): If True, skips sentences with mismatched without affecting accuracy.
 
     Returns:
-    - sentence_accuracy (float): The sentence accuracy of stressification.
-    - word_accuracy (float): The accuracy of word stressification.
-    - heteronym_accuracy (float): The accuracy of heteronym stressification.
+        dict: A dictionary containing the accuracy metrics.
     """
     dataset = open_dataset_for_evaluation()
     metrics = DatasetAccuracy()
+    stress_mark = "+"
 
     iterator = tqdm(dataset, desc="Evaluating", disable=not show_progress)
     skipped = 0
@@ -66,13 +65,13 @@ def evaluate_stressification(
     # Process each sentence
     for correct_sentence in iterator:
         sentence = correct_sentence.replace(stress_mark, "")  # Remove the stress mark for comparison
-        stressified_sentence = stressify_sentence_function(sentence)
+        predicted_sentence = stressify_sentence_function(sentence)
 
         # Evaluate word and sentence accuracy
-        current_metrics, list_wrong_words = evaluate_stress_sentence_level(
+        current_metrics = evaluate_stress_sentence_level(
             correct_sentence,
-            stressified_sentence,
-            raise_on_mismatch=raise_on_sent_mismatch,
+            predicted_sentence,
+            raise_on_mismatch=raise_on_mismatch,
             ignore_mismatch=ignore_mismatch,
         )
         if ignore_mismatch and current_metrics is None:
