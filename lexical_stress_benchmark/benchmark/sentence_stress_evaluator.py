@@ -25,7 +25,6 @@ VOCABULARY = marisa_trie.BytesTrie().load(os.path.join("..", "data", "stress.tri
 
 
 def is_word_heteronym(word: str):
-    word = word.replace("+", "").lower()
     return word in HETERONYMS
 
 
@@ -136,7 +135,7 @@ def evaluate_stress_sentence_level(
     is_unambiguous = False
 
     for correct_word, candidate_word in zip(correct_words, candidate_words):
-
+        plain_word = correct_word.lower().replace(stress_mark, "")
         plus_pattern = rf"[{stress_mark}]"
         ukrainian_vowels_pattern = r"[АаЕеЄєИиІіЇїОоУуЮюЯя]"
         if (
@@ -152,11 +151,12 @@ def evaluate_stress_sentence_level(
             accuracy.total_words -= 1
             continue
 
-        if is_word_heteronym(correct_word.replace(stress_mark, "")):
+        if is_word_heteronym(plain_word):
             accuracy.total_heteronyms += 1
             is_heteronym = True
+            accuracy.heteronyms_dictionary[plain_word][correct_word.lower()].append(candidate_word.lower())
 
-        if is_word_unambiguous(correct_word.replace(stress_mark, "")):
+        if is_word_unambiguous(plain_word):
             accuracy.total_unambiguous_words += 1
             is_unambiguous = True
 
