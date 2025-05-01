@@ -20,5 +20,5 @@ if __name__ == "__main__":
     print(f"{'Sentence Accuracy:':40} {sentence_accuracy * 100:.2f}%")
     print(f"{'Word Accuracy:':40} {word_accuracy * 100:.2f}%")
     print(f"{'Unambiguous Words Accuracy:':40} {unambiguous_accuracy * 100:.2f}%")
-    print(f"{'Heteronym Accuracy:':40} {heteronym_accuracy * 100:.2f}%")
+    print(f"{'Ambiguous Words  Accuracy:':40} {heteronym_accuracy * 100:.2f}%")
     print(f"{'Macro-Average F1 score (Heteronyms)):':40} {macro_average_f1_across_heteronyms * 100:.2f}%")

@@ -1,7 +1,0 @@
-numpy==2.0.2
-pandas==2.2.3
-tqdm==4.67.1
-marisa-trie==1.2.1
-ukrainian-accentor @ git+https://github.com/egorsmkv/ukrainian-accentor.git@3dff5ecd2ac91e879086c0e2a7f1ce079603c9f1
-ukrainian_word_stress==1.1.1
-nemo-toolkit==2.1.0

@@ -139,7 +139,7 @@ class DatasetAccuracy:
         return {
             "sentence_accuracy": self.fully_correct_sentences / total_sentences if total_sentences else 0.0,
             "word_accuracy": self.correctly_stressified_words / self.total_words if self.total_words else 0.0,
-            "heteronym_accuracy": (
+            "ambiguous_accuracy": (
                 self.correctly_stressified_heteronyms / self.total_heteronyms if self.total_heteronyms else 0.0
             ),
             "unambiguous_accuracy": (
