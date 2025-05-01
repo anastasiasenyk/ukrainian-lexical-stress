@@ -18,10 +18,10 @@ pip install -r requirements.txt
 
 Pretrained and fine-tuned checkpoints for Ukrainian text-to-speech with voice cloning:
 
-- **Fine-tuned model:**  
+- **Fine-tuned model** - expects phonemized input with stress marks: 
   [Ukrainian_XTTSv2_common_voice](https://huggingface.co/mouseyy/Ukrainain_XTTSv2_common_voice)
 
-- **Baseline model:**  
+- **Baseline model** -  expects normalized plain text without phonemization and stress marks:
   [Ukrainian_XTTSv2_common_voice_baseline](https://huggingface.co/mouseyy/Ukrainain_XTTSv2_common_voice_baseline)
 
 You can find an example of how to run inference in the notebook:  
