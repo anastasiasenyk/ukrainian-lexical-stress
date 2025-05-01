@@ -168,8 +168,8 @@ common_voice_train_norm = apply_replacement(common_voice_train_norm)
 common_voice_test_norm = apply_replacement(common_voice_test_norm)
 
 
-common_voice_test_norm.save_to_disk('./common_voice_test_data')
-common_voice_train_norm.save_to_disk('./common_voice_train_data')
+common_voice_test_norm.save_to_disk('./wav2vec/data/common_voice_test_data')
+common_voice_train_norm.save_to_disk('./wav2vec/data/common_voice_train_data')
 
 
 def extract_all_chars(batch):
@@ -189,8 +189,6 @@ vocab_test = common_voice_test_norm.map(
 )
 
 vocab_list = list(set(vocab_train["vocab"][0]) | set(vocab_test["vocab"][0]))
-#vocab_list.extend(["+а", "+о", "+у", "+е", "+є", "+я", "+и", "+ї", "+і", "+ю"])
-#vocab_list = [el for el in vocab_list if el !="+"]
 
 vocab_dict = {v: k for k, v in enumerate(vocab_list)}
 
@@ -203,5 +201,5 @@ vocab_dict["[PAD]"] = len(vocab_dict)
 print("Len vocab: ", len(vocab_dict))
 print(vocab_dict)
 
-with open('vocab.json', 'w') as vocab_file:
+with open('./wav2vec/data/vocab.json', 'w') as vocab_file:
     json.dump(vocab_dict, vocab_file)

@@ -26,7 +26,7 @@ from typing import Dict, List, Optional, Union
 
 import evaluate
 import torch
-from datasets import DatasetDict, load_dataset, load_from_disk, Audio
+from datasets import DatasetDict, load_from_disk, Audio
 
 from transformers import (
     AutoConfig,
@@ -249,8 +249,8 @@ class ExtendedTrainingArguments:
 
 def setup_dataset(training_args, feature_extractor, tokenizer):
     raw_datasets = DatasetDict()
-    raw_datasets["train"] = load_from_disk('../data/common_voice_train_data')
-    raw_datasets["eval"] = load_from_disk('../data/common_voice_test_data')
+    raw_datasets["train"] = load_from_disk('./wav2vec/data/common_voice_train_data')
+    raw_datasets["eval"] = load_from_disk('./wav2vec/data/common_voice_test_data')
 
     def prepare_dataset(batch):
         audio = batch["audio"]
@@ -281,33 +281,21 @@ NUMBER_OF_TRIAL=1
 
 def objective(trial: optuna.Trial):
     global NUMBER_OF_TRIAL
-    
-    print('\nDUBUG: config update start ')
+
     # adapt config
     config.update(
         {
-            # "feat_proj_dropout": model_args.feat_proj_dropout,
-            # "attention_dropout": model_args.attention_dropout,
-            # "hidden_dropout": model_args.hidden_dropout,
-            # "final_dropout": model_args.final_dropout,
-            # "mask_time_prob": model_args.mask_time_prob,
             "mask_time_length": model_args.mask_time_length,
-            # "mask_feature_prob": model_args.mask_feature_prob,
             "mask_feature_length": model_args.mask_feature_length,
-            # "gradient_checkpointing": training_args.gradient_checkpointing,
-            # "layerdrop": model_args.layerdrop,
             "ctc_loss_reduction": model_args.ctc_loss_reduction,
             "ctc_zero_infinity": model_args.ctc_zero_infinity,
             "pad_token_id": tokenizer.pad_token_id,
             "vocab_size": len(tokenizer),
-            # "activation_dropout": model_args.activation_dropout,
             "add_adapter": model_args.add_adapter,
         }
     )
-    
-    # gradient_checkpointing = trial.suggest_int("gradient_checkpointing", low=1, high=4)
+
     config.update({
-        # "gradient_checkpointing": gradient_checkpointing,
         "attention_dropout": trial.suggest_float("attention_dropout", low=0.01, high=0.1, log=True),
         "hidden_dropout": trial.suggest_float("hidden_dropout", low=0.01, high=0.1, log=True),
         "feat_proj_dropout": trial.suggest_float("feat_proj_dropout", low=0.01, high=0.1, log=True),
@@ -316,28 +304,20 @@ def objective(trial: optuna.Trial):
         "layerdrop": trial.suggest_float("layerdrop", low=0.01, high=0.1, log=True),
         "activation_dropout":  trial.suggest_float("layerdrop", low=0.01, high=0.1, log=True),
     })
-    
-    # training_args.per_device_train_batch_size = trial.suggest_categorical("batch_size", [16])
+
     training_args.per_device_train_batch_size=16
     training_args.per_device_eval_batch_size=16
     training_args.learning_rate =trial.suggest_float("learning_rate", low=0.00001, high=0.0001, log=True)
     training_args.warmup_steps = trial.suggest_int("warmup_steps", low=1, high=50)
-    # training_args.gradient_checkpointing = gradient_checkpointing
     training_args.save_total_limit = 1
     training_args.fp16 = True
-    #training_args.group_by_length=True
     training_args.torch_compile_backend="inductor"
     training_args.torch_compile_mode="reduce-overhead"
     
-    
-    
-    
     NUMBER_OF_TRIAL += 1
-    vocab_file = "vocab.json"
+    vocab_file = "./wav2vec/data/vocab.json"
     training_args.output_dir = f"{training_args.output_dir}-{NUMBER_OF_TRIAL}" 
     main_dir = training_args.output_dir.split("-")[0]
-        
-    print('\nDUBUG: config updated ')
     
     with training_args.main_process_first():
         if is_main_process(training_args.local_rank):
@@ -352,20 +332,6 @@ def objective(trial: optuna.Trial):
             feature_extractor.save_pretrained(training_args.output_dir)
             tokenizer.save_pretrained(training_args.output_dir)
             config.save_pretrained(training_args.output_dir)
-            
-            print('\nParameters debug: ')
-            print("batch_size ----", training_args.per_device_train_batch_size)
-            print("learning_rate ----", training_args.learning_rate)
-            print("warmup_steps ----", training_args.warmup_steps)
-            print("gradient_checkpointing ----", training_args.gradient_checkpointing)
-            
-            print("attention_dropout ----", config.attention_dropout)
-            print("hidden_dropout ----", config.hidden_dropout)
-            print("feat_proj_dropout ----", config.feat_proj_dropout)
-            print("mask_time_prob ----", config.mask_time_prob)
-            print("mask_feature_prob ----", config.mask_feature_prob)
-            print("activation_dropout ----", config.activation_dropout)
-            print("layerdrop ----", config.layerdrop)
             
 
     processor = AutoProcessor.from_pretrained(training_args.output_dir)
@@ -414,16 +380,8 @@ def objective(trial: optuna.Trial):
         preprocess_logits_for_metrics=preprocess_logits_for_metrics,
     )
 
-    # if os.path.isdir(model_args.model_name_or_path):
-    #     checkpoint = model_args.model_name_or_path
-    # else:
-    #     checkpoint = None
-    
-    print('\nDUBUG: training start ')
 
     train_result = trainer.train()
-    
-    print("\nTRAIN RESULT DEBUG: ", train_result)
 
     trainer.save_model()
 
@@ -434,8 +392,6 @@ def objective(trial: optuna.Trial):
     trainer.save_metrics("train", metrics)
     trainer.save_state()
     
-    print("\nTRAIN METRICS DEBUG: ", metrics)
-    
     # # Evaluation
     logger.info("*** Evaluate ***")
     metrics = trainer.evaluate()
@@ -445,7 +401,6 @@ def objective(trial: optuna.Trial):
     trainer.save_metrics("eval", metrics)
 
     trainer.push_to_hub(finetuned_from=model_args.model_name_or_path,)
-    print("\nEVAL METRICS DEBUG: ", metrics)
     
     return metrics['eval_wer']
 
@@ -478,7 +433,7 @@ config = AutoConfig.from_pretrained(
 # We need to make sure that only first rank saves vocabulary
 # make sure all processes wait until vocab is created
 tokenizer_name_or_path = model_args.tokenizer_name_or_path
-vocab_file = "vocab.json"
+vocab_file = "./wav2vec/data/vocab.json"
 
 tokenizer_kwargs = {}
 if tokenizer_name_or_path is None:

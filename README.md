@@ -119,6 +119,28 @@ python g2p_train_and_evaluate.py \
 
 # Wav2Vec2 with Lexical Stress
 
+The model transcribes Ukrainian speech with incorporated lexical stress directly in the text.  
+Fine-tuned model is available on Hugging Face: [mouseyy/uk_wav2vec2_with_stress_mark](https://huggingface.co/mouseyy/uk_wav2vec2_with_stress_mark)
+
+### Training Data
+
+The model was trained using the [Common Voice](https://commonvoice.mozilla.org/) corpus, annotated with stress information from:
+- [Ukrainian Word Stress](https://github.com/lang-uk/ukrainian-word-stress)  
+- [Ukrainian Accentor](https://github.com/egorsmkv/ukrainian-accentor)
+
+### 1. Prepare the Dataset
+   ```bash
+   python wav2vec/data/setup_dataset.py
+   ```
+
+### 2. Train the Model
+   ```bash
+   bash wav2vec/train/run_tuning_script.sh
+   ```
+
+> *Training script adapted from:*  
+> [Transformers Pytorch Examples](https://github.com/huggingface/transformers/blob/main/examples/pytorch/speech-recognition/run_speech_recognition_ctc.py)
+
 ---
 
 # Ukrainian Lexical Stress Benchmark

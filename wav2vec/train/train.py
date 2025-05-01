@@ -16,21 +16,16 @@
 
 """Fine-tuning a 🤗 Transformers CTC model for automatic speech recognition"""
 
-import functools
-import json
 import logging
 import os
-import re
 import sys
 import shutil
-import warnings
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Union
 
-import datasets
 import evaluate
 import torch
-from datasets import DatasetDict, load_dataset, load_from_disk, Audio
+from datasets import DatasetDict, load_from_disk, Audio
 
 import transformers
 from transformers import (
@@ -42,7 +37,6 @@ from transformers import (
     HfArgumentParser,
     Trainer,
     TrainingArguments,
-    Wav2Vec2Processor,
     set_seed,
 )
 from transformers.trainer_utils import get_last_checkpoint, is_main_process
@@ -244,8 +238,8 @@ class DataCollatorCTCWithPadding:
 
 def setup_dataset(training_args, feature_extractor, tokenizer):
     raw_datasets = DatasetDict()
-    raw_datasets["train"] = load_from_disk('../data/common_voice_train_data')
-    raw_datasets["eval"] = load_from_disk('../data/common_voice_test_data')
+    raw_datasets["train"] = load_from_disk('./wav2vec/data/common_voice_train_data')
+    raw_datasets["eval"] = load_from_disk('./wav2vec/data/common_voice_test_data')
 
     def prepare_dataset(batch):
         audio = batch["audio"]
@@ -358,22 +352,7 @@ def setup_training_with_params(config, model_args, training_args, feature_extrac
                 "the `--output_dir` or add `--overwrite_output_dir` to train from scratch."
             )
 
-    # if last_checkpoint is not None:
-    #     checkpoint = last_checkpoint
-    # elif os.path.isdir(model_args.model_name_or_path):
-    #     checkpoint = model_args.model_name_or_path
-    # else:
-    #     checkpoint = None
-
-    print('\nDEBUG -- checkpoint-- ', training_args.resume_from_checkpoint)
-
-    print('\nDUBUG: training start ')
-    print('\nDEBUG -- TRAINING ARGS--\n', training_args)
-
     train_result = trainer.train(resume_from_checkpoint=training_args.resume_from_checkpoint)
-
-    print("\nTRAIN RESULT DEBUG: ", train_result)
-
     trainer.save_model()
 
     metrics = train_result.metrics
@@ -382,8 +361,6 @@ def setup_training_with_params(config, model_args, training_args, feature_extrac
     trainer.log_metrics("train", metrics)
     trainer.save_metrics("train", metrics)
     trainer.save_state()
-
-    print("\nTRAIN METRICS DEBUG: ", metrics)
 
     # # Evaluation
     logger.info("*** Evaluate ***")
@@ -394,8 +371,6 @@ def setup_training_with_params(config, model_args, training_args, feature_extrac
     trainer.save_metrics("eval", metrics)
 
     trainer.push_to_hub(finetuned_from=model_args.model_name_or_path, )
-    print("\nEVAL METRICS DEBUG: ", metrics)
-
     return metrics['eval_wer']
 
 
@@ -434,7 +409,6 @@ def main():
         tokenizer_name_or_path = training_args.output_dir
 
         new_vocab_file = os.path.join(tokenizer_name_or_path, "vocab.json")
-        print("VOCAB FILE PATH: ", new_vocab_file)
 
         with training_args.main_process_first(desc="dataset map vocabulary creation"):
             if not os.path.isfile(new_vocab_file):

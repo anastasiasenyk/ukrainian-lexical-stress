@@ -6,7 +6,8 @@ echo "Start!"
 
 torchrun --nproc_per_node 2 run_one_training.py \
     --model_name_or_path="facebook/wav2vec2-xls-r-300m" \
-    --output_dir="../data/result_wav2vec" \
+    --output_dir="./wav2vec/data/result_wav2vec" \
+    --vocab_file="./wav2vec/data/vocab.json" \
     --num_train_epochs="15" \
     --per_device_train_batch_size="16" \
     --per_device_eval_batch_size="16"  \

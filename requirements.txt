@@ -16,3 +16,5 @@ lightning~=2.5
 whisper~=1.1
 transformers~=4.51
 torchaudio~=2.7
+evaluate~=0.4
+optuna~=4.3
