@@ -16,8 +16,17 @@ pip install -r requirements.txt
 
 # Ukrainian TTS with Voice Cloning
 
-Fine-tuned TTS model checkpoint is available on:
-- https://huggingface.co/spaces/mouseyy/Ukrainian_XTTSv2
+Pretrained and fine-tuned checkpoints for Ukrainian text-to-speech with voice cloning:
+
+- **Fine-tuned model:**  
+  [Ukrainian_XTTSv2_common_voice](https://huggingface.co/mouseyy/Ukrainain_XTTSv2_common_voice)
+
+- **Baseline model:**  
+  [Ukrainian_XTTSv2_common_voice_baseline](https://huggingface.co/mouseyy/Ukrainain_XTTSv2_common_voice_baseline)
+
+You can find an example of how to run inference in the notebook:  
+`tts_model/tts_model_inference.ipynb`
+
 
 ### 1. Prepare Dataset
 
