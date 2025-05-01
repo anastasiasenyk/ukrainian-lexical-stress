@@ -16,6 +16,106 @@ pip install -r requirements.txt
 
 # Ukrainian TTS with Voice Cloning
 
+Fine-tuned TTS model checkpoint is available on:
+- https://huggingface.co/spaces/mouseyy/Ukrainian_XTTSv2
+
+### 1. Prepare Dataset
+
+- **A. Use Preprocessed Dataset**
+
+   A ready-to-use version of the dataset is available and can be downloaded using the Hugging Face Hub:
+   ```python
+   from huggingface_hub import hf_hub_download
+   import zipfile
+   
+   zip_path = hf_hub_download(
+       repo_id="mouseyy/common_voice_19_uk_cropped",
+       filename="wavs.zip",
+       repo_type="dataset",
+       local_dir="common_voice_data",
+       local_dir_use_symlinks=False
+   )
+   
+   with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+       zip_ref.extractall("common_voice_data")
+   
+   for split in ["train", "test", "eval"]:
+       hf_hub_download(repo_id="mouseyy/common_voice_19_uk_cropped",
+                       filename=f"metadata_{split}.csv",
+                       repo_type="dataset",
+                       local_dir="common_voice_data",
+                       local_dir_use_symlinks=False)
+   ```
+
+- **B. Build the Dataset from Scratch**
+
+   If you'd like to build the dataset manually, refer to the notebook at:
+   
+   ```
+   tts_model/prepare_data.ipynb
+   ```
+   
+   This notebook starts from the data in `tts_model/data/prepared`, which contains the original train/test/dev splits from Common Voice, additionally annotated using Whisper transcriptions. Word Error Rate (WER) is computed between original and Whisper outputs.
+   
+   To crop and resample Common Voice audio files, use the script:
+   
+   ```
+   tts_model/crop_and_resample_cv.py
+   ```
+
+### 2. Model Training
+
+1. Start by setting up the training environment:
+   ```bash
+   cd tts_model
+   git clone https://github.com/nguyenhoanganh2002/XTTSv2-Finetuning-for-New-Languages.git
+   cd XTTSv2-Finetuning-for-New-Languages
+   ```
+
+2. Install the dependencies (recommended versions):
+   - `torch==2.2.0`  
+   - `torchaudio==2.2.0`
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Download the base checkpoint:
+   ```bash
+   python download_checkpoint.py --output_path checkpoints/
+   ```
+
+4. Extend Vocabulary for Ukrainian
+
+   ```bash
+   python extend_vocab_config.py \
+       --output_path=checkpoints/ \
+       --metadata_path=common_voice_data/metadata_train.csv \ # correct path to your data
+       --language=uk \
+       --extended_vocab_size=1000
+   ```
+
+5. Learning Rate Scheduler Modification
+
+   We modified the training script to use `ExponentialLR` with `gamma=0.9`.  
+   The updated version of the training script is located at:  
+   `tts_model/xtts_modified_files/train_gpt_xtts.py`
+
+6. Launch Training
+
+   ```bash
+   python train_gpt_xtts.py \
+   --output_path checkpoints/ \
+   --metadatas common_voice_data/metadata_train.csv,common_voice_data/metadata_eval.csv,uk \ # correct path to your data
+   --num_epochs 100 \
+   --batch_size 24 \
+   --grad_acumm 2 \
+   --max_text_length 200 \
+   --max_audio_length 330750 \
+   --weight_decay 1e-2 \
+   --lr 5e-6 \
+   --save_step 2000
+   ```
+
 
 # Ukrainian Lexical Stress Prediction Model
 
