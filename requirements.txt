@@ -1,15 +1,18 @@
-numpy==2.0.2
-pandas==2.2.3
-tqdm==4.67.1
-marisa-trie==1.2.1
-ukrainian_word_stress==1.1.1
+numpy~=2.0
+pandas~=2.2
+tqdm~=4.67
+marisa-trie~=1.2
+ukrainian_word_stress~=1.1
 ukrainian-accentor @ git+https://github.com/egorsmkv/ukrainian-accentor.git@3dff5ecd2ac91e879086c0e2a7f1ce079603c9f1
 ukrainian-accentor-transformer @ git+https://github.com/Theodotus1243/ukrainian-accentor-transformer.git@1af138199c61d996094575fb0efe34a0b2e85adc
-nemo-toolkit==2.1.0
-huggingface-hub==0.30.2
-Levenshtein==0.27.1
-transformers==4.49.0
-torch==2.6.0
-datasets==3.3.2
-tokenizers==0.21.0
-lightning==2.5.1
+nemo-toolkit~=2.1
+huggingface-hub~=0.30
+Levenshtein~=0.27
+transformers~=4.49
+torch~=2.6
+datasets~=3.3
+tokenizers~=0.21
+lightning~=2.5
+whisper~=1.1
+transformers~=4.51
+torchaudio~=2.7

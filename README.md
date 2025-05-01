@@ -8,6 +8,11 @@ To install the required dependencies, run:
 pip install -r requirements.txt
 ```
 
+**List of content:**
+- [Ukrainian TTS with Voice Cloning](#ukrainian-tts-with-voice-cloning)
+- [Ukrainian Lexical Stress Prediction Model](#ukrainian-lexical-stress-prediction-model)
+- [Wav2Vec2 with Lexical Stress](#wav2vec2-with-lexical-stress)
+- [Ukrainian Lexical Stress Benchmark](#ukrainian-lexical-stress-benchmark)
 
 # Ukrainian TTS with Voice Cloning
 
@@ -19,8 +24,7 @@ We provide a model for predicting lexical stress in Ukrainian words.
 ### Model Overview
 
 - **Architecture**: ByT5-based Grapheme-to-Phoneme model.
-- **Training Data**: Voice of America corpus annotated with stress marks using an ASR Wav2Vec2 model. [Navigate to wav2vec2 description](#asr-wav2vec2-with-lexical-stress).
-
+- **Training Data**: Voice of America corpus annotated with stress marks using an ASR Wav2Vec2 model. [Navigate to wav2vec2 description](#wav2vec2-with-lexical-stress).
 
 ### Quickstart: Run the Lexical Stress Prediction Model
 ```python
@@ -40,19 +44,55 @@ stressed_sentence = stressifier.stressify("Привіт, як у тебе спр
 
 ### Training Instructions
 
+We provide a preprocessed dataset (`accentor_model/data/voice_of_america/voa_stressed_cleaned_data.csv`), already transcribed with a Wav2Vec2 model and cleaned. 
+If you want to start from scratch with the raw dataset, begin at **Step 0**. Otherwise, proceed directly to **Step 1**.
+
+### Step 0: (Optional) Prepare the Raw Dataset
+
+1. **Download the dataset** 
+
+   Download from [Zenodo](https://zenodo.org/records/7405411) and save to the `accentor_model/data/prepare_dataset/` directory and navigate to it.
+2. **Convert "voa_clean.jsonl" to "voa_clean.csv"**
+
+    ```bash
+    python convert_to_csv.py
+    ```
+3. **Re-transcribe with Whisper to clean audio** 
+
+    ```bash
+    python transcribe_with_whisper.py
+    ```
+4. **Clean the dataset using original and Whisper transcriptions**  
+
+    ``` bash
+    python clean_dataset.py
+    ```
+5. **Transcribe cleaned dataset with Wav2Vec2 to form a synthetic dataset with stress marks**  
+
+    ``` bash
+    python transcribe_with_whisper.py
+    ```
+6. **Clean dataset after Wav2Vec transcriptions (data provided in 'accentor_model/data/raw')**
+    ``` bash
+    python cleaned_stressed_dataset.py
+    ```
+
+
 #### 1. Prepare the Dataset
 
-Normalize and prepare the dataset (already annotated with stress):
+From the project root directory:
 
-```bash
-python accentor_model/data/create_dataset.py
-```
+1. Normalize and prepare the dataset (already annotated with stress):
 
-Convert the dataset to NeMo-compatible format:
+    ```bash
+    python accentor_model/data/create_dataset.py
+    ```
 
-```bash
-python accentor_model/byt5_g2p/dataset_to_nemo_format.py
-```
+2. Convert the dataset to NeMo-compatible format:
+
+    ```bash
+    python accentor_model/byt5_g2p/dataset_to_nemo_format.py
+    ```
 
 #### 2. Train the Model
 
@@ -72,12 +112,12 @@ python g2p_train_and_evaluate.py \
     do_testing=True
 ```
 
-> 📄 *Training script adapted from:*  
+> *Training script adapted from:*  
 > [NVIDIA NeMo G2P Example](https://github.com/NVIDIA/NeMo/blob/main/examples/tts/g2p/g2p_train_and_evaluate.py)
 
 ---
 
-# ASR Wav2Vec2 with Lexical Stress
+# Wav2Vec2 with Lexical Stress
 
 ---
 

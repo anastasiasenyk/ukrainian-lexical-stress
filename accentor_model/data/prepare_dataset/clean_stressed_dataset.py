@@ -142,7 +142,6 @@ filtered_df.loc[:,'merged_transcription_2'] = filtered_df.progress_apply(
     lambda row: merge_texts(row['text'], row['wav2vec_stress_transcription']), axis=1)
 filtered_df.loc[:,'merged_transcription_corrected_2'] = filtered_df['merged_transcription_2'].progress_apply(correct_stress_marks)
 filtered_df.loc[:,'is_incorrect_2'] = filtered_df['merged_transcription_corrected_2'].progress_apply(detect_wrong_stresses)
-# filtered_df.to_csv('./voa_stressed.csv')
 
 # Apply the condition and update 'merged_transcription_corrected' and 'is_incorrect' where condition is met
 filtered_df.loc[
@@ -159,7 +158,7 @@ column_mappings = {
     'filename': 'file_name',
     'text': 'original_transcription',
     'wav2vec2_transcription': 'whisper_transcription',
-    'wav2vec_stress_txranscription': 'stressified_transcription',
+    'wav2vec_stress_transcription': 'stressified_transcription',
     'merged_transcription_corrected': 'stressified_merged',
     'is_incorrect': 'is_incorrect'
 }
@@ -181,7 +180,7 @@ filtered_df = filtered_df.rename(columns={'merged_transcription_corrected': 'lab
 filtered_df['labels'] = filtered_df['labels'].str.strip()
 filtered_df['text'] = filtered_df['labels'].apply(lambda x: x.replace('+', ''))
 
-filtered_df.to_csv('voa_stressed_all_data.csv', index=False)
+filtered_df.to_csv('../voice_of_america/voa_stressed_all_data.csv', index=False)
 
 filtered_df = filtered_df[mask]
-filtered_df.to_csv('voa_stressed_cleaned_data.csv', index=False)
+filtered_df.to_csv('../voice_of_america/voa_stressed_cleaned_data.csv', index=False)
