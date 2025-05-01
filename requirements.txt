@@ -8,3 +8,8 @@ ukrainian-accentor-transformer @ git+https://github.com/Theodotus1243/ukrainian-
 nemo-toolkit==2.1.0
 huggingface-hub==0.30.2
 Levenshtein==0.27.1
+transformers==4.49.0
+torch==2.6.0
+datasets==3.3.2
+tokenizers==0.21.0
+lightning==2.5.1

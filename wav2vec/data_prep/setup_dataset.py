@@ -1,9 +1,7 @@
-from datasets import load_dataset, Audio
-import pandas as pd
 import re
 from ukrainian_word_stress import Stressifier, OnAmbiguity
 import ukrainian_accentor as accentor
-from tqdm import tqdm
+from datasets import load_dataset
 import json
 
 common_voice_train = load_dataset("mozilla-foundation/common_voice_17_0", "uk", split="train+validation", trust_remote_code=True)

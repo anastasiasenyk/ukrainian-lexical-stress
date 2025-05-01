@@ -47,7 +47,7 @@ def prepare_dataset(df, eval_size=0.01):
 
 
 # Load data
-df = pd.read_csv("../data/voa_stressed_cleaned_data.csv")
+df = pd.read_csv("accentor_model/data/voa_stressed_cleaned_data.csv")
 
 # Prepare dataset
 dataset = prepare_dataset(df)

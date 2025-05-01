@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv('./voice_of_america/voa_stressed_cleaned_data.csv')
+df = pd.read_csv('accentor_model/data/voice_of_america/voa_stressed_cleaned_data.csv')
 
 UKRAINIAN_LETTERS = "абвгґдеєжзиіїйклмнопрстуфхцчшщьюя"
 UKRAINIAN_VOWELS = "аеєиіїоуюя"
@@ -32,4 +32,4 @@ df["text"] = df["text"].apply(lambda x: clean_text(x))
 df['text'] = df['text'].str.strip()
 df['labels'] = df['labels'].str.strip()
 
-df.to_csv('./voa_stressed_cleaned_data.csv', index=False)
+df.to_csv('accentor_model/data/voice_of_america/voa_stressed_cleaned_data.csv', index=False)
